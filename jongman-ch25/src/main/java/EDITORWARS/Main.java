@@ -33,7 +33,7 @@ public class Main {
             // 이미 둘이 같은 트리에 속한 경우
             if (u == v) return u;
 
-            if (rank[u] == rank[v]) swap(u, v);
+            if (rank[u] > rank[v]) swap(u, v);
             if (rank[u] == rank[v]) rank[v]++;
             parent[u] = v;
             size[v] += size[u];
@@ -113,8 +113,9 @@ public class Main {
             int n = scanner.nextInt(); // 회원의 수
             int m = scanner.nextInt(); // 댓글의 수
 
-
             BipartiteUnionFind buf = new BipartiteUnionFind(n);
+            boolean isContradiction = false;
+            int lineNumOfContradiction = 0;
             for (int j = 0; j < m; j++) {
                 String type = scanner.next().trim();
                 int a = scanner.nextInt();
@@ -123,18 +124,22 @@ public class Main {
                 if (type.equals("ACK")) {
                     boolean result = buf.ack(a, b);
                     if (result == false) {
-                        System.out.println("CONTRADICTION AT " + (j + 1));
-                        break;
+                        isContradiction = true;
+                        if (lineNumOfContradiction == 0) lineNumOfContradiction = j + 1;
                     }
                 } else {
                     boolean result = buf.dis(a, b);
                     if (result == false) {
-                        System.out.println("CONTRADICTION AT " + (j + 1));
-                        break;
+                        isContradiction = true;
+                        if (lineNumOfContradiction == 0) lineNumOfContradiction = j + 1;
                     }
                 }
             }
-            System.out.println("MAX PARTY SIZE IS " + solution.maxParty(buf));
+            if (isContradiction) {
+                System.out.println("CONTRADICTION AT " + lineNumOfContradiction);
+            } else {
+                System.out.println("MAX PARTY SIZE IS " + solution.maxParty(buf));
+            }
         }
     }
 }
