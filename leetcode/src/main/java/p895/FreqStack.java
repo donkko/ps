@@ -2,16 +2,15 @@ package p895;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 class FreqStack {
     class FreqAndPosition {
         int freq;
-        List<Integer> positions = new LinkedList<>();
+        LinkedList<Integer> positions = new LinkedList<>();
 
         int getHighestPosition() {
-            return positions.get(positions.size() - 1);
+            return positions.getLast();
         }
     }
 
@@ -62,43 +61,22 @@ class FreqStack {
             map.remove(numberToPop);
         } else {
             fap.freq -= 1;
-            fap.positions.remove(fap.positions.size() - 1);
+            fap.positions.removeLast();
         }
 
         for (Map.Entry<Integer, FreqAndPosition> entry : map.entrySet()) {
-            for (int i = 0; i < entry.getValue().positions.size(); i++) {
-                int pos = entry.getValue().positions.get(i);
-                if (pos > position) {
-                    entry.getValue().positions.set(i, pos - 1);
+            LinkedList<Integer> newPositions = new LinkedList<>();
+            for (Integer e : entry.getValue().positions) {
+                if (e > position) {
+                    newPositions.add(e - 1);
+                } else {
+                    newPositions.add(e);
                 }
             }
+            entry.getValue().positions = newPositions;
         }
 
         return numberToPop;
-    }
-
-    public static void main(String[] args) {
-        FreqStack freqStack = new FreqStack();
-        freqStack.push(4);
-        freqStack.push(0);
-        freqStack.push(9);
-        freqStack.push(3);
-        freqStack.push(4);
-        freqStack.push(2);
-        freqStack.pop();
-        freqStack.push(6);
-        freqStack.pop();
-        freqStack.push(1);
-        freqStack.pop();
-        freqStack.push(4);
-        freqStack.pop();
-        freqStack.pop();
-        freqStack.pop();
-        freqStack.pop();
-        freqStack.pop();
-        freqStack.pop();
-
-        System.out.println("DONE");
     }
 }
 
