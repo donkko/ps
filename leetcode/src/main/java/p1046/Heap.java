@@ -5,7 +5,8 @@ import java.util.PriorityQueue;
 
 public class Heap {
     public int lastStoneWeight(int[] stones) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>(stones.length, Comparator.reverseOrder());
+        PriorityQueue<Integer> pq =
+                new PriorityQueue<>(stones.length, Comparator.reverseOrder());
         for (int stone : stones) {
             pq.add(stone);
         }
@@ -20,6 +21,7 @@ public class Heap {
                 pq.add(top1 - top2);
             }
         }
-        return pq.peek();
+        if (pq.isEmpty()) return 0;
+        else return pq.peek();
     }
 }
