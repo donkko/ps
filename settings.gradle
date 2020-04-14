@@ -3,5 +3,6 @@ rootProject.name = "ps"
 include 'jongman-ch19'
 include 'jongman-ch24'
 include 'jongman-ch25'
+include 'jongman-ch29'
 include 'leetcode'
 include 'leetcode-weekly-contest-162'
