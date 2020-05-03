@@ -1,4 +1,4 @@
-package day14;
+package p1427;
 
 public class StringManipulation {
     public String stringShift(String s, int[][] shift) {

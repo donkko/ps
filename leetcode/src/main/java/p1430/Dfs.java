@@ -1,4 +1,4 @@
-package day30;
+package p1430;
 
 class TreeNode {
     int val;

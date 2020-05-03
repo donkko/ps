@@ -1,4 +1,4 @@
-package day7;
+package p1426;
 
 import java.util.HashSet;
 
