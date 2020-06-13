@@ -1,9 +1,6 @@
 package yeje2;
 
 // 퀵소트
-// 시간복잡도: 평균 O(NlogN), 최악 O(N^2)
-// 공간복잡도: ?
-
 public class QuickSort {
     public void sort(int[] arr, int leftIdx, int rightIdx) {
         if (leftIdx >= rightIdx) {

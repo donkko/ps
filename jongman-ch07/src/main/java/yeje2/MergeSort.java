@@ -1,9 +1,6 @@
 package yeje2;
 
 // 머지소트
-// 시간복잡도 O(NlogN)
-// 공간복잡도 O(NlogN)
-
 public class MergeSort {
     public void sort(int[] arr, int left, int right) {
         if (left >= right) {
@@ -51,7 +48,7 @@ public class MergeSort {
     }
 
     public static void main(String[] args) {
-        int arr[] = { 12, 11, 13, 5, 6, 7 };
+        int[] arr = { 12, 11, 13, 5, 6, 7 };
 
         MergeSort solution = new MergeSort();
         solution.sort(arr, 0, arr.length - 1);
