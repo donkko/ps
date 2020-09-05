@@ -6,92 +6,99 @@ import java.util.Scanner;
 
 public class Main {
 
+    int skip;
     int[] s;
     int[] cacheLen;
     int[] cacheCnt;
 
-    public int lis(int start) {
+    int lis(int start) {
         if (cacheLen[start + 1] != 0) return cacheLen[start + 1];
 
-        int ret = 1;
-        for (int next = start + 1; next < s.length; next++) {
-            if (start == -1 || s[next] > s[start]) {
-                ret = Math.max(ret, 1 + lis(next));
+        int maxLength = 1;
+        for (int i = start + 1; i < s.length; i++) {
+            if (start == -1 || s[start] < s[i]) {
+                maxLength = Math.max(maxLength, 1 + lis(i));
             }
         }
-        cacheLen[start + 1] = ret;
-        return ret;
+
+        cacheLen[start + 1] = maxLength;
+        return maxLength;
     }
 
-    public int count(int start) {
-        if(lis(start) == 1) return 1;
+    int count(int start) {
+        if (lis(start) == 1) return 1;
         if (cacheCnt[start + 1] != 0) return cacheCnt[start + 1];
 
-        int ret = 0;
-        for (int next = start + 1; next < s.length; next++) {
-            if ( (start == -1 || s[next] > s[start]) && lis(start) == lis(next) + 1) {
-                ret = (int) Math.min(2000000000, (long) ret + (long) count(next));
+        int count = 0;
+        for (int i = start + 1; i < s.length; i++) {
+            if ( (start == -1 || s[start] < s[i]) && lis(start) == lis(i) + 1 ) {
+                count = (int) Math.min((long) count + (long) count(i), 2000000000L);
             }
         }
-        cacheCnt[start + 1] = ret;
-        return ret;
+
+        cacheCnt[start + 1] = count;
+        return count;
     }
 
-    public void reconstruct(int start, int skip, List<Integer> answer) {
-        if (start != -1) answer.add(s[start]);
+    void reconstruct(int start, List<Integer> lis) {
+        if (start != -1) lis.add(s[start]);
 
-        List<Pair> followers = new ArrayList<>();
-        for (int next = start + 1; next < s.length; next++) {
-            if ((start == -1 || s[next] > s[start]) && lis(start) == lis(next) + 1) {
-                followers.add(new Pair(s[next], next));
+        List<Integer> followers = new ArrayList<>();
+        for (int i = start + 1; i < s.length; i++) {
+            if ( (start == -1 || s[start] < s[i]) && lis(start) == lis(i) + 1 ) {
+                followers.add(i);
             }
         }
-        followers.sort((a,b) -> a.value - b.value);
+        followers.sort((a,b) -> s[a] - s[b]);
 
         for (int i = 0; i < followers.size(); i++) {
-            int idx = followers.get(i).idx;
+            int idx = followers.get(i);
             int cnt = count(idx);
             if (cnt <= skip) {
                 skip -= cnt;
             } else {
-                reconstruct(idx, skip, answer);
+                reconstruct(idx, lis);
                 break;
             }
         }
     }
 
     public static void main(String[] args) {
-        Main solution = new Main();
-
         Scanner scanner = new Scanner(System.in);
-        int c = scanner.nextInt(); // 테스트 케이스의 수 (<= 50)
+        int c = scanner.nextInt(); // 테스트 케이스의 수
         for (int i = 0; i < c; i++) {
-            int n = scanner.nextInt(); // 원소의 수 (<= 500)
-            int k = scanner.nextInt(); // k번째 있는 LIS를 출력해야 함
+            int n = scanner.nextInt(); // 원소의 수
+            int k = scanner.nextInt(); // k번째 LIS를 출력해야 한다
 
             int[] seq = new int[n];
             for (int j = 0; j < n; j++) {
                 seq[j] = scanner.nextInt();
             }
 
+            Main solution = new Main();
+            solution.skip = k - 1;
             solution.s = seq;
             solution.cacheLen = new int[501];
             solution.cacheCnt = new int[501];
-
-            List<Integer> kthLis = new ArrayList<>();
-            solution.reconstruct(-1, k - 1, kthLis);
-            System.out.println(kthLis.size());
-            System.out.println(kthLis);
+            List<Integer> answer = new ArrayList<>();
+            solution.reconstruct(-1, answer);
+            System.out.println(answer.size());
+            for (int elem : answer) System.out.print(elem + " ");
+            System.out.println();
         }
     }
 }
 
-class Pair {
-    int value;
-    int idx;
 
-    public Pair(int value, int idx) {
-        this.idx = idx;
-        this.value = value;
-    }
-}
+/*
+-1     0  1  2  3  4  5
+-INF   9, 1, 4, 3, 2, 8
+
+9로 시작하는 LIS의 개수 = 1
+1로 시작하는 LIS의 개수 = 3
+4로 시작하는 LIS의 개수 = 1
+3로 시작하는 LIS의 개수 = 1
+2로 시작하는 LIS의 개수 = 1
+8로 시작하는 LIS의 개수 = 1
+
+ */
