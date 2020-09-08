@@ -2,7 +2,9 @@ HELP.md
 .gradle
 build
 .class
+*.class
 .jar
+*.jar
 !gradle/wrapper/gradle-wrapper.jar
 
 ### STS ###
