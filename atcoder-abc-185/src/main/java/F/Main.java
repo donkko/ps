@@ -1,24 +1,23 @@
 package F;
 
 import java.util.*;
+import java.util.function.BiFunction;
 
 public class Main {
     public void solve(int n, int q, int[] a, int[][] queries) {
+        SegmentTree segmentTree = new SegmentTree((a1, a2) -> a1 ^ a2, a);
+
         for (int[] query : queries) {
             int t = query[0];
             int x = query[1] - 1;
             int y = query[2] - 1;
 
             if (t == 1) {
-                a[x] = a[x]^(y+1);
+                segmentTree.update(x, segmentTree.query(x, x) ^ (y+1));
             }
 
             if (t == 2) {
-                int result = 0;
-                for (int i = x; i <= y; i++) {
-                    result = result ^ a[i];
-                }
-                System.out.println(result);
+                System.out.println(segmentTree.query(x, y));
             }
         }
     }
@@ -66,3 +65,67 @@ public class Main {
 2 3 5
 
  */
+
+
+
+
+class SegmentTree {
+    private final BiFunction<Integer, Integer, Integer> operation;
+    private final int[] tree;
+    private final int n;
+
+    public SegmentTree(BiFunction<Integer, Integer, Integer> operation, int[] arr) {
+        this.operation = operation;
+        this.n = arr.length;
+        this.tree = new int[n * 2];
+        buildTree(this.operation, this.tree, arr);
+    }
+
+    private void buildTree(BiFunction<Integer, Integer, Integer> operation, int[] tree, int[] inputArr) {
+        for (int i = 0; i < n; i++) {
+            tree[n + i] = inputArr[i];
+        }
+
+        for (int i = n - 1; i > 0; i--) {
+            tree[i] = operation.apply(tree[i * 2], tree[i * 2 + 1]);
+        }
+    }
+
+    /**
+     * inclusive [startIdx, endIdx]
+     */
+    public int query(int startIdx, int endIdx) {
+        if (startIdx == endIdx) return tree[n + startIdx];
+
+        int res = 0;
+        startIdx = n + startIdx;
+        endIdx = n + endIdx;
+
+        while (startIdx < endIdx) {
+            if (startIdx % 2 == 1) {
+                res = operation.apply(res, tree[startIdx]);
+                startIdx++;
+            }
+
+            if (endIdx % 2 == 0) {
+                res = operation.apply(res, tree[endIdx]);
+                endIdx--;
+            }
+
+            startIdx = startIdx / 2;
+            endIdx = endIdx / 2;
+        }
+        if (startIdx == endIdx) {
+            res = operation.apply(res, tree[startIdx]);
+        }
+
+        return res;
+    }
+
+    public void update(int idx, int value) {
+        tree[n + idx] = value;
+        for (int i = n + idx; i > 1; i = i / 2) {
+            tree[i / 2] = operation.apply(tree[i], tree[i ^ 1]);
+        }
+    }
+}
