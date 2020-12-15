@@ -1,5 +1,6 @@
 rootProject.name = "ps"
 
+include 'aclibrary'
 include 'atcoder-abc-170'
 include 'atcoder-abc-174'
 include 'atcoder-abc-175'
